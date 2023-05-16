@@ -21,10 +21,16 @@ class Author(models.Model):
     email = models.EmailField()
     bio = models.TextField()
 
+    def __str__(self) -> str:
+        return f"{self.first_name} {self.last_name}"
+
 
 class BookAuthor(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     author = models.ForeignKey(Author, on_delete=models.CASCADE)
+
+    def __str__(self) -> str:
+        return f"{self.book.title} by {self.author.first_name} {self.author.last_name}"
 
 
 class BookReview(models.Model):
@@ -34,3 +40,6 @@ class BookReview(models.Model):
     stars_given = models.IntegerField(
         validators=[MinValueValidator(1), MaxValueValidator(5)]
     )
+
+    def __str__(self) -> str:
+        return f"{self.stars_given} stars for {self.user.username} {self.user.last_name}: {self.book.title} "
