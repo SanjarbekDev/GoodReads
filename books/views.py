@@ -10,5 +10,9 @@ class BookListview(View):
     
 
 class BookDetialView(View):
-    def get(self, request):
-        pass
+    def get(self, request, id):
+        book = Book.objects.get(id=id)
+        context = {
+            'book' : book
+        }
+        return render(request, "books/detial.html", context)

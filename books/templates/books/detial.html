@@ -1,2 +1,9 @@
-<h1>Detial page</h1>
-
+{%extends "base.html"%}
+{%block title%}Detial{%endblock%}
+{%block content%}
+    <h1>Detial page</h1>
+    <h3>{{book.title}}</h3>
+    <p>
+        {{book.description}}
+    </p>
+{%endblock%}

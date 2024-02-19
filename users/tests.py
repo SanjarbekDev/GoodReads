@@ -80,10 +80,13 @@ class RegTestCase(TestCase):
         self.assertFormError(response,'form','username','A user with that username already exists.')
 
 class LoginUserTestCase(TestCase):
+
+    def setUp(self):
+        self.db_user = User.objects.create(username = "Sanjey", first_name = "Sanjarbek")
+        self.db_user.set_password("somepass")
+        self.db_user.save()
+
     def test_successfuly_login(self):
-        db_user = User.objects.create(username = "Sanjey", first_name = "Sanjarbek")
-        db_user.set_password("somepass")
-        db_user.save()
 
         self.client.post(
             reverse("users:login"),
@@ -94,14 +97,10 @@ class LoginUserTestCase(TestCase):
         )
 
         user = get_user(self.client)
-
         self.assertTrue(user.is_authenticated)
 
 
     def test_wrong_credentials(self):
-        db_user = User.objects.create(username = "Sanjey", first_name = "Sanjarbek")
-        db_user.set_password("somepass")
-        db_user.save()
 
         self.client.post(
             reverse("users:login"),
@@ -112,7 +111,34 @@ class LoginUserTestCase(TestCase):
         )
 
         user = get_user(self.client)
-
         self.assertFalse(user.is_authenticated)
 
+    def logout_user(self):
+        self.client.login(username='Sanjey', password='somepass')
+        self.client.get(reverse("user:logout"))
+        user = get_user(self.client)
+        self.assertFalse(user.is_authenticated)
 
+class ProfileTestCase(TestCase):
+    def test_user_login_requared(self):
+        response = self.client.get(reverse('users:profile'))
+        self.assertEquals(response.status_code, 302)
+        self.assertEquals(response.url, reverse('users:login') + '?next=/users/profile/')
+
+    def test_user_login_detials(self):
+        user = User.objects.create(
+                                    username = "Sanjey", 
+                                    first_name = "Sanjarbek",
+                                    email = 'tommy@gmail.com',
+                        )
+        user.set_password("passphrase")
+        user.save()
+
+        self.client.login(username='Sanjey', password='passphrase')
+        ress = self.client.get(reverse('users:profile'))
+
+        self.assertEquals(ress.status_code, 200)
+
+        self.assertContains(ress, user.username)
+        self.assertContains(ress, user.first_name)
+        self.assertContains(ress, user.email)
