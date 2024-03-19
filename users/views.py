@@ -1,7 +1,7 @@
 from django.shortcuts import redirect, render
 from django.views import View
-from . forms import UserCreateForms, UserLoginForm
-from django.contrib.auth.models import User
+from . forms import UserCreateForms, UserUpdateForm
+from users.models import CustomUser
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 
@@ -65,4 +65,20 @@ class ProfileViev(LoginRequiredMixin, View):
         return render(request, 'users/profile.html', {'user' : user})
 
 
+class ProfileUpdateView(LoginRequiredMixin ,View):
+    def get(self, request):
+        user_update_form = UserUpdateForm(instance=request.user)
+        return render(request, 'users/profile_edit.html',{'form' : user_update_form})
     
+    def post(self, request):
+        user_update_data = UserUpdateForm(instance=request.user, 
+                                          data=request.POST,
+                                          files=request.FILES
+        )
+
+        if user_update_data.is_valid():
+            user_update_data.save()
+            messages.success(request , "Profile succsessfuly changes!")
+            return redirect('users:profile')
+        
+        return render(request , "users/profile_edit.html", {'form':user_update_data})

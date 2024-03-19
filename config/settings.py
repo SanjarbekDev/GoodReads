@@ -2,6 +2,9 @@
 from pathlib import Path
 from environs import Env
 
+import dotenv
+dotenv.load_dotenv(verbose=True, override=True)
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -83,10 +86,10 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
         "NAME" : env.str("DB_NAME"),
-        "HOST" : env.str("DB_HOST"),
-        "PORT" : "5432",
-        "USER" : env.str("DB_USER",),
-        "PASSWORD" : env.str("DB_PASS")
+        "HOST" : env.str('DB_HOST'),
+        "PORT" : 5432,
+        "USER" : env.str('DB_USER'),
+        "PASSWORD" : env.str('DB_PASS'),
 
     }
 }
@@ -123,11 +126,21 @@ USE_I18N = True
 
 USE_TZ = True
 
+AUTH_USER_MODEL = 'users.CustomUser'
 
+#media files
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = "media_files"
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
+
 STATIC_URL = "static/"
+
+STATICFILES_DIRS = [
+    BASE_DIR / 'static'
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
