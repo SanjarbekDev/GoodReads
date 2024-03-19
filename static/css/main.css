@@ -1,0 +1,7 @@
+.user_profile{
+    border-radius: 50%;
+    border: 2px;
+    border-color: #dfe6ec;
+    width: 150px;
+    height: 150px;
+}

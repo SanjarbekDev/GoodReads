@@ -2,7 +2,10 @@
 {%block title%}Profile{%endblock%}
 {%block content%}
     <h1>Profile page</h1>
+
+    <img class="user_profile" src="{{user.profile_picture.url}}" alt="avatar">
     <p>User name: {{ user.username }}</p>
     <p>First name: {{ user.first_name }}</p>
     <p>email: {{ user.email }}</p>
+    <a href="{% url 'users:profile_edit'%}">settings</a>
 {%endblock%}
